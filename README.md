@@ -75,7 +75,7 @@ net.predict(image, overlayOnImage);
 Demo is located in folder `demo` from downloaded repository. It will find `yolo_nas_s.onnx` model file from directory where it's executed from, and image `image.jpg` and use it for detection. To compile and run it, execute `build.sh` from `demo` folder.
 
 ## Custom model & metadata
-To use your own model, and run it inside this library, [please follow this Colab notebook](), or, better, run it inside your machine by using `metadata.py`, [link here](). In `metadata.py`, first few variables you need to change according to your model (model path, model type, number of classes). Everything is nicely explained. **IMPORTANT: `metadata.py` DOES NOT ACCEPT `.onnx` FILE FORMAT!** It only accepts the standard YOLO `.pt` format.
+To convert and use your own model, run it also inside library, [please follow this Colab notebook](https://colab.research.google.com/github/ukicomputers/yolonas-cpp/blob/main/notebooks/metadata.ipynb), or better, run it inside your machine by using `metadata.py`, [link here](https://github.com/ukicomputers/yolonas-cpp/blob/main/metadata.py). In `metadata.py`, first few variables you need to change according to your model (model path, model type, number of classes). Everything is nicely explained. **IMPORTANT: `metadata.py` DOES NOT ACCEPT `.onnx` FILE FORMAT!** It only accepts the standard YOLO `.pt` format.
 
 ## TODO
 - normalize image
