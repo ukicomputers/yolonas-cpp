@@ -19,11 +19,8 @@ int main()
 {
     /*  YoloNAS class argument requirements:
             modelpath (std::string),
+            metadata path (std::string),
             CUDA support (bool),
-            image size (std::vector<int> e.g. {width, height}),
-            score thereshold (float),
-            IoU theresold (float),
-            center padding value (int)
             labels in a vector (std::vector<std::string>)
 
         All of this information you can find in Python script that gets info
@@ -31,7 +28,7 @@ int main()
     */
 
     // Prepare YoloNAS
-    YoloNAS net("./yolo_nas_s.onnx", false, {640, 640}, 0.25, 0.45, 114, COCO_LABELS);
+    YoloNAS net("./yolo_nas_s.onnx", "./metadata", false, COCO_LABELS);
 
     // Prepare Image
     cv::Mat img = cv::imread("./image.jpg");

@@ -1,9 +1,11 @@
 // Written by Uglješa Lukešević (github.com/ukicomputers)
 
 #pragma once
-#include <vector>
+#include <fstream>
 #include <opencv2/opencv.hpp>
 #include <opencv2/dnn.hpp>
+
+using namespace std;
 
 class YoloNAS
 {
@@ -11,25 +13,33 @@ private:
     cv::dnn::Net net;
     cv::Size outShape;
 
-    void runPostProccessing(std::vector<std::vector<cv::Mat>> &out);
+    void runPostProccessing(vector<vector<cv::Mat>> &out);
 
-    float scoreThresh;
-    float iouThresh;
-    int pad_value;
+    vector<float> scores;
+    vector<cv::Rect> boxes;
+    vector<int> labels, selectedIDX;
+    vector<string> detectLabels;
 
-    std::vector<float> scores;
-    std::vector<cv::Rect> boxes;
-    std::vector<int> labels, selectedIDX;
-    std::vector<std::string> detectLabels;
+    struct metadataConfig
+    {
+        float iou, score;
+        int width, height;
+        float std;
+        bool dr, dlmr;
+        int brm, cp;
+    };
+
+    vector<metadataConfig> readConfig(string filePath);
+    vector<metadataConfig> cfg;
 
 public:
     struct detInf
     {
         int x, y, cx, cy, score;
-        std::string label;
+        string label;
     };
 
-    YoloNAS(std::string netPath, bool cuda, std::vector<int> imgsz, float score, float iou, int centerPadding, std::vector<std::string> lbls);
+    YoloNAS(string netPath, string config, bool cuda, vector<string> lbls);
     void predict(cv::Mat &img, bool applyOverlayOnImage = true);
-    std::vector<detInf> result;
+    vector<detInf> result;
 };

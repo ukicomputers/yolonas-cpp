@@ -7,20 +7,13 @@ As normal world of AI today becomed reality, we use it as much as we can. Every 
 
 ## Detection
 ![detected](https://github.com/ukicomputers/yolonas-cpp/assets/84191191/800d2aa9-e564-4cd5-a8c8-a38328711fbc)
-<br><br>Library uses **OpenCV** and it's **DNN** to run the model. Model is under **ONNX** format. Requirements & abilities:
-- runs on ONNX model
-- ability to run on GPU, using CUDA (_not tested, in **BETA** yet_, CPU runtime default)
-- model width and height
-- score thereshold
-- IoU (**Intersection over Union**) thereshold
-- center padding (value for detection image centering)
-- labels
+<br><br>Library uses **OpenCV** and it's **DNN** to run the model. Model is under **ONNX** format. It's also able to run on **CUDA**.
 
 ## Requirements
 - GCC
 - CMake
 - OpenCV (installed as CMake library)
-- CUDA compatible GPU (_optionally, if you want to use GPU inference_)
+- CUDA compatible GPU + `nvcc` (_optionally, if you want to use GPU inference_)
 
 ## Setup
 To install this library on your computer, firstly clone this repository:
@@ -39,8 +32,8 @@ After that library will be installed!
 ```cpp
 // include
 #include <ukicomputers/YoloNAS.hpp>
-//          model path           CUDA   Model size  score IoU   padding  labels
-YoloNAS net("./yolo_nas_s.onnx", false, {640, 640}, 0.25, 0.45, 114, COCO_LABELS);
+//              modelpath           metadata   CUDA   Labels
+YoloNAS net("./yolo_nas_s.onnx", "./metadata", false, {"lbl1", "lbl2"});
 //          img  overlay (visually displayed detection)
 net.predict(img, true);
 ```
@@ -59,17 +52,14 @@ target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 ## Full library usage
 YoloNAS class argument requirements:
 ```cpp
-YoloNAS::YoloNAS(std::string netPath, bool cuda, std::vector<int> imgsz, float score, float iou, int centerPadding, std::vector<std::string> lbls)
+YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls)
 ```
 - modelpath (`std::string`),
+- Metadata file (`std::string`),
 - CUDA support (`bool`),
-- image size (`std::vector<int>` e.g. `{width, height}`),
-- score thereshold (`float`),
-- IoU theresold (`float`),
-- center padding value (`int`)
 - labels in a vector (`std::vector<std::string>`)
 ```cpp
-YoloNAS net(modelPath, CUDA, size, scoreThresh, IoUthresh, padCenter, labels);
+YoloNAS net(modelPath, metadata, CUDA, labels);
 ```
 Void `predict`:
 ```cpp
@@ -82,17 +72,14 @@ net.predict(image, overlayOnImage);
 ```
 
 ## Demo
-Demo is located in folder `demo` from downloaded repository. It will find `yolo_nas_s.onnx` model file from directory where it's executed from, and image `image.jpg` and use it for detection. To compile and run it, execute this commands:
-```console
-cd demo
-rm -rf build
-mkdir build
-cd build
-cmake ..
-make
-./yolonas-demo
-```
-`yolo_nas_s.onnx` is model file that is converted from original YOLO-NAS `.pt` file. To convert your model and find it's metadata, [please follow this Colab notebook](). Feel free to change the demo file in it, everything is nicely explained!
+Demo is located in folder `demo` from downloaded repository. It will find `yolo_nas_s.onnx` model file from directory where it's executed from, and image `image.jpg` and use it for detection. To compile and run it, execute `build.sh` from `demo` folder.
+
+## Custom model & metadata
+To use your own model, and run it inside this library, [please follow this Colab notebook](), or, better, run it inside your machine by using `metadata.py`, [link here](). In `metadata.py`, first few variables you need to change according to your model (model path, model type, number of classes). Everything is nicely explained. **IMPORTANT: `metadata.py` DOES NOT ACCEPT `.onnx` FILE FORMAT!** It only accepts the standard YOLO `.pt` format.
+
+## TODO
+- normalize image
+- read metadata in CPP without converting
 
 ## License & contributions
 Please add my name to top of a document to use library. It helps me feeling lot better!
