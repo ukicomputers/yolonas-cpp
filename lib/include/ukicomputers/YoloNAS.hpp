@@ -41,5 +41,6 @@ public:
 
     YoloNAS(string netPath, string config, bool cuda, vector<string> lbls);
     void predict(cv::Mat &img, bool applyOverlayOnImage = true);
-    vector<detInf> result;
+    void clearResults();
+    vector<detInf> result;    
 };
