@@ -76,6 +76,13 @@ vector<YoloNAS::metadataConfig> YoloNAS::readConfig(string filePath)
     bool dr, dlmr;
     int brm, cp;
 
+    if (!file.is_open())
+    {
+        // Close program if cannot open metadata
+        cerr << "cannot open metadata!" << endl;
+        exit(-1);
+    }
+
     while (getline(file, line))
     {
         // Parse configuration parameters

@@ -54,6 +54,7 @@ YoloNAS class argument requirements:
 ```cpp
 YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls)
 ```
+**Initializes YoloNAS class.**
 - modelpath (`std::string`),
 - Metadata file (`std::string`),
 - CUDA support (`bool`),
@@ -65,10 +66,20 @@ Void `predict`:
 ```cpp
 void YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
 ```
+**Predicts (detects) objects from image.**
 - image (`cv::Mat`)
 - visualy display detection (`bool`, writing on given image)
 ```cpp
 net.predict(image, overlayOnImage);
+```
+
+Void `clearResults`:
+```cpp
+void YoloNAS::clearResults()
+```
+**Clears the results, only use if running real time.**
+```cpp
+net.clearResults();
 ```
 
 ## Demo
@@ -80,6 +91,7 @@ To convert and use your own model, run it also inside library, [please follow th
 ## TODO
 - normalize image
 - read metadata in CPP without converting
+- make detection visualisation look cooler
 
 ## License & contributions
 Please add my name to top of a document to use library. It helps me feeling lot better!

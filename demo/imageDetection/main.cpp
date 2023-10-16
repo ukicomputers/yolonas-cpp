@@ -28,7 +28,7 @@ int main()
     */
 
     // Prepare YoloNAS
-    YoloNAS net("./yolo_nas_s.onnx", "./metadata", false, COCO_LABELS);
+    YoloNAS net("./model.onnx", "./metadata", false, COCO_LABELS);
 
     // Prepare Image
     cv::Mat img = cv::imread("./image.jpg");
