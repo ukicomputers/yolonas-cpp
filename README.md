@@ -90,7 +90,6 @@ To convert and use your own model, run it also inside library, [please follow th
 
 ## TODO
 - normalize image
-- read metadata in CPP without converting
 - make detection visualisation look cooler
 
 ## License & contributions
