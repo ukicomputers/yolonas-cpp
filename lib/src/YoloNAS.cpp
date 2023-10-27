@@ -73,7 +73,7 @@ vector<YoloNAS::metadataConfig> YoloNAS::readConfig(string filePath)
     float iou, score;
     int width, height;
     float std;
-    bool dr, dlmr;
+    bool dlmr;
     int brm, cp;
 
     if (!file.is_open())
@@ -97,33 +97,27 @@ vector<YoloNAS::metadataConfig> YoloNAS::readConfig(string filePath)
         else if (cl == 5)
             std = (line != "n") ? stof(line) : 0;
         else if (cl == 6)
-            dr = (line == "t");
-        else if (cl == 7)
             dlmr = (line == "t");
-        else if (cl == 8)
+        else if (cl == 7)
             brm = (line != "n") ? stof(line) : 0;
-        else if (cl == 9)
+        else if (cl == 8)
             cp = (line != "n") ? stof(line) : 0;
         cl++;
     }
 
     file.close();
     vector<metadataConfig> tmp;
-    tmp.push_back({iou, score, width, height, std, dr, dlmr, brm, cp});
+    tmp.push_back({iou, score, width, height, std, dlmr, brm, cp});
     return tmp;
 }
 
 void YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
 {
+    // Resize the input image to match the model's output shape
+    cv::resize(img, img, outShape, 0, 0, cv::INTER_LINEAR);
+    
     cv::Mat imgInput;
     img.copyTo(imgInput);
-
-    // Resize the input image to match the model's output shape
-    if (cfg[0].dr)
-    {
-        cv::resize(img, img, outShape, 0, 0, cv::INTER_LINEAR);
-        cv::resize(imgInput, imgInput, outShape, 0, 0, cv::INTER_LINEAR);
-    }
 
     // Resize the image while preserving the aspect ratio
     if (cfg[0].dlmr)
@@ -133,8 +127,6 @@ void YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
         float scaleFactor = std::min(scaleFactorX, scaleFactorY);
         int newWidth = (int)std::round(imgInput.cols * scaleFactor);
         int newHeight = (int)std::round(imgInput.rows * scaleFactor);
-
-        cv::resize(img, img, cv::Size(newWidth, newHeight), 0, 0, cv::INTER_LINEAR);
         cv::resize(imgInput, imgInput, cv::Size(newWidth, newHeight), 0, 0, cv::INTER_LINEAR);
     }
 
@@ -143,7 +135,16 @@ void YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
     {
         int padWidth = outShape.width - imgInput.rows;
         int padHeight = outShape.height - imgInput.cols;
-        cv::copyMakeBorder(imgInput, imgInput, 0, padHeight, 0, padWidth, cv::BORDER_CONSTANT, cv::Scalar(cfg[0].brm, cfg[0].brm, cfg[0].brm));
+
+        try
+        {
+            cv::copyMakeBorder(imgInput, imgInput, 0, padHeight, 0, padWidth, cv::BORDER_CONSTANT, cv::Scalar(cfg[0].brm, cfg[0].brm, cfg[0].brm));
+        }
+        catch (cv::Exception ex)
+        {
+            cerr << "Metadata does not match with model properties!" << endl;
+            exit(-1);
+        }
     }
 
     // Pad detection to the center
@@ -154,7 +155,16 @@ void YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
         int padWidth = outShape.height - imgInput.cols;
         padLeft = padWidth / 2;
         padTop = padHeight / 2;
-        cv::copyMakeBorder(imgInput, imgInput, padTop, padHeight - padTop, padLeft, padWidth - padLeft, cv::BORDER_CONSTANT, cv::Scalar(cfg[0].cp, cfg[0].cp, cfg[0].cp));
+
+        try
+        {
+            cv::copyMakeBorder(imgInput, imgInput, padTop, padHeight - padTop, padLeft, padWidth - padLeft, cv::BORDER_CONSTANT, cv::Scalar(cfg[0].cp, cfg[0].cp, cfg[0].cp));
+        }
+        catch (cv::Exception ex)
+        {
+            cerr << "Metadata does not match with model properties!" << endl;
+            exit(-1);
+        }
     }
 
     // Standardize the image if needed

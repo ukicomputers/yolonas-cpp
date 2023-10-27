@@ -25,7 +25,7 @@ private:
         float iou, score;
         int width, height;
         float std;
-        bool dr, dlmr;
+        bool dlmr;
         int brm, cp;
     };
 

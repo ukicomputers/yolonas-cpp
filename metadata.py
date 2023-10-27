@@ -14,7 +14,6 @@ import numpy as np
 std = None
 brp = None
 cp = None
-dr = None
 dlmr = None
 
 
@@ -22,8 +21,6 @@ def get_preprocessing_steps(preprocessing, processing):
     global std, brp, cp, dr, dlmr
     if isinstance(preprocessing, processing.StandardizeImage):
         std = preprocessing.max_value
-    elif isinstance(preprocessing, processing.DetectionRescale):
-        dr = True
     elif isinstance(preprocessing, processing.DetectionLongestMaxSizeRescale):
         dlmr = True
     elif isinstance(preprocessing, processing.DetectionBottomRightPadding):
@@ -33,7 +30,7 @@ def get_preprocessing_steps(preprocessing, processing):
 
 
 def main():
-    global std, brp, cp, dr, dlmr
+    global std, brp, cp, dlmr
     from super_gradients.training import models
     import super_gradients.training.processing as processing
 
@@ -60,11 +57,6 @@ def main():
     else:
         file += "n" + "\n"
 
-    if dr != None:
-        file += "t" + "\n"
-    else:
-        file += "n" + "\n"
-
     if dlmr != None:
         file += "t" + "\n"
     else:
@@ -87,7 +79,6 @@ def main():
         width (int)
         height (int)
         standardize (string t:n, 1:0)
-        detect rescale (string t:n, 1:0)
         detect long max rescale (string t:n, 1:0)
         bottom right padding (int:string (if n))
         center padding (int:string (if n))
