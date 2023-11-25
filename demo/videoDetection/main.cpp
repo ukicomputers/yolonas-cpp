@@ -1,6 +1,8 @@
 // Written by Uglješa Lukešević (github.com/ukicomputers)
 
 #include <ukicomputers/YoloNAS.hpp>
+#include <chrono>
+#include <cmath>
 #include <iostream>
 
 // This is vector for already trained (by deci.ai) YOLO-NAS COCO dataset
@@ -17,6 +19,10 @@ const std::vector<std::string> COCO_LABELS{"person", "bicycle", "car", "motorcyc
 
 int main()
 {
+    // Initialize FPS counter
+    std::chrono::steady_clock::time_point begin;
+    std::chrono::steady_clock::time_point end;
+
     /*  YoloNAS class argument requirements:
             modelpath (std::string),
             metadata path (std::string),
@@ -30,8 +36,8 @@ int main()
     // Prepare YoloNAS
     YoloNAS net("./model.onnx", "./metadata", false, COCO_LABELS);
 
-    // Make an capture (currently from video file)
-    cv::VideoCapture cap("./video.mp4");
+    // Make an capture (currently from camera source, you can also use and video, just specify it's path in string)
+    cv::VideoCapture cap(0);
 
     // If we cannot open capture, we are returning an error
     if (!cap.isOpened())
@@ -58,8 +64,17 @@ int main()
             bool overlayOnImage = true (for visually representative detection)
         */
 
+        // Run the FPS counter
+        begin = std::chrono::steady_clock::now();
+
         // Simply run net.predict(frame) to detect with overlay
         net.predict(frame);
+
+        // Stop the FPS counter and show the count
+        end = std::chrono::steady_clock::now();
+        float fps = 1000.0 / static_cast<float>(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
+        fps = std::roundf(fps * 100) / 100;
+        cv::putText(frame, "FPS: " + to_string(fps), cv::Point(20, 20), cv::FONT_HERSHEY_DUPLEX, 0.5, cv::Scalar(0, 0, 0));
 
         // Show the result
         cv::imshow("detection", frame);
