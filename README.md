@@ -86,7 +86,18 @@ net.clearResults();
 Demo is located in folder `demo` from downloaded repository. It will find `yolo_nas_s.onnx` model file from directory where it's executed from, and image `image.jpg` and use it for detection. To compile and run it, execute `build.sh` from `demo` folder.
 
 ## Custom model & metadata
-To convert and use your own model, run it also inside library, [please follow this Colab notebook](https://colab.research.google.com/github/ukicomputers/yolonas-cpp/blob/main/notebooks/metadata.ipynb), or better, run it inside your machine by using `metadata.py`, [link here](https://github.com/ukicomputers/yolonas-cpp/blob/main/metadata.py). In `metadata.py`, first few variables you need to change according to your model (model path, model type, number of classes). Everything is nicely explained. **IMPORTANT: `metadata.py` DOES NOT ACCEPT `.onnx` FILE FORMAT!** It only accepts the standard YOLO `.pt` format.
+To use your own model, and run it also inside library, convert it to ONNX format like this:
+```py
+from super_gradients.training import models
+from super_gradients.common.object_names import Models
+
+model = models.get(Models.YOLO_NAS_L, pretrained_weights="coco")
+
+model.eval()
+model.prep_model_for_conversion(input_size=[1, 3, 640, 640])
+model.export("yolo_nas_s.onnx", postprocessing=None, preprocessing=None)
+```
+Also, metadata for model is required, so you need to execute `metadata.py`, [link here](https://github.com/ukicomputers/yolonas-cpp/blob/main/metadata.py). In `metadata.py`, first few variables you need to change according to your model (model path, model type, number of classes). **IMPORTANT: `metadata.py` DOES NOT ACCEPT `.onnx` FILE FORMAT!** It only accepts the standard YOLO `.pt` format.
 
 ## TODO
 - normalize image
@@ -97,6 +108,7 @@ Please add my name to top of a document to use library. It helps me feeling lot 
 ```cpp
 // YOLO-NAS Library written by Uglješa Lukešević (github.com/ukicomputers)
 ```
+Thanks to [Hyuto](https://github.com/Hyuto) for his work on ONNX implementation of YOLO-NAS in C++ which was utilized in this project.<br>
 Also, feel free to open new issues, and contribute it with opening pull request!
 
 ## References
