@@ -15,6 +15,9 @@ const std::vector<std::string> COCO_LABELS{"person", "bicycle", "car", "motorcyc
                                            "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator",
                                            "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"};
 
+// Head directory of all models
+const string modelsPath = "../../../models/yolonas/onnx/";
+
 int main()
 {
     /*  YoloNAS class argument requirements:
@@ -28,10 +31,10 @@ int main()
     */
 
     // Prepare YoloNAS
-    YoloNAS net("./model.onnx", "./metadata", false, COCO_LABELS);
+    YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", false, COCO_LABELS);
 
     // Prepare Image
-    cv::Mat img = cv::imread("./image.jpg");
+    cv::Mat img = cv::imread(modelsPath + "image.jpg");
 
     /* Argument requirements for net.predict void:
         cv::Mat (image),

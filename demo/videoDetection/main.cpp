@@ -17,6 +17,9 @@ const std::vector<std::string> COCO_LABELS{"person", "bicycle", "car", "motorcyc
                                            "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator",
                                            "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"};
 
+// Head directory of all models
+const string modelsPath = "../../../models/yolonas/onnx/";
+
 int main()
 {
     // Initialize FPS counter
@@ -34,7 +37,7 @@ int main()
     */
 
     // Prepare YoloNAS
-    YoloNAS net("./model.onnx", "./metadata", false, COCO_LABELS);
+    YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", false, COCO_LABELS);
 
     // Make an capture (currently from camera source, you can also use and video, just specify it's path in string)
     cv::VideoCapture cap(0);

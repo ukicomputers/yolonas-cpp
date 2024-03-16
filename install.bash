@@ -1,3 +1,4 @@
+#!/bin/bash
 cd lib
 rm -rf build
 mkdir build
