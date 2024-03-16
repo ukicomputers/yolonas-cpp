@@ -14,6 +14,8 @@ As normal world of AI today becomed reality, we use it as much as we can. Everyo
 - CMake
 - OpenCV (installed as CMake library) with `dnn` submodule enabled
 - CUDA compatible GPU + `nvcc` (_optionally, if you want to use GPU inference_)
+### Attention!
+I got issues when I used precompiled version of OpenCV, `libopencv-dev`, installed with `apt` package manager. Then, I was not able to start a inference at all. To fix this issue, I compiled and installed OpenCV using this [gist](https://gist.github.com/ukicomputers/e559854ac0b4fba7ea722722f96d5fbf). Please use it to avoid any issues.
 
 ## Setup
 To install this library on your computer, firstly clone this repository:
@@ -29,7 +31,7 @@ After that library will be installed.<br><br>**Aditionally**, if you want to dow
 ```bash
 bash download_models.bash
 ```
-Download size is about ~40MB.
+Download size is about ~47MB.
 
 ## Quick usage
 **CPP** code (_not full code, just minimal example_):
@@ -54,7 +56,8 @@ target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 ```
 
 ## Full library usage
-YoloNAS class argument requirements:
+### `YoloNAS` class
+Acceptable arguments:
 ```cpp
 YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls)
 ```
@@ -66,24 +69,25 @@ YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls
 ```cpp
 YoloNAS net(modelPath, metadata, CUDA, labels);
 ```
-Void `predict`:
+### Function `predict`
+Acceptable arguments:
 ```cpp
-void YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
+vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
 ```
 **Predicts (detects) objects from image.**
 - image (`cv::Mat`)
-- visualy display detection (`bool`, writing on given image)
+- visualy display detection (`bool`, writing on given image, default `true`)
 ```cpp
 net.predict(image, overlayOnImage);
 ```
-
-Void `clearResults`:
+**Returns `detInf` struct(s) in vector for each detection.** <br>
+Accesible elements from `detInf` struct:
 ```cpp
-void YoloNAS::clearResults()
-```
-**Clears the results, only use if running real time.**
-```cpp
-net.clearResults();
+struct detInf
+{
+    int x, y, w, h, score;
+    std::string label;
+};
 ```
 
 ## Demo

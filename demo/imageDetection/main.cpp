@@ -2,9 +2,10 @@
 
 #include <ukicomputers/YoloNAS.hpp>
 #include <iostream>
+using namespace std;
 
 // This is vector for already trained (by deci.ai) YOLO-NAS COCO dataset
-const std::vector<std::string> COCO_LABELS{"person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat",
+const vector<string> COCO_LABELS{"person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat",
                                            "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
                                            "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack",
                                            "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball",
@@ -42,26 +43,26 @@ int main()
     */
 
     // Simply run net.predict(img) to detect with overlay
-    net.predict(img);
+    auto result = net.predict(img);
 
     /* Defined vector for detection result:
-        net.result[i].x - X coordinate of detected object (int)
-        net.result[i].y - Y coordinate of detected object (int)
-        net.result[i].cx - Width of detected object (int)
-        net.result[i].cy - Height of detected object (int)
-        net.result[i].label - Name of detetected object (std::string)
-        net.result[i].score - Accuracy of detected object (float)
+        result[i].x - X coordinate of detected object (int)
+        result[i].y - Y coordinate of detected object (int)
+        result[i].cx - Width of detected object (int)
+        result[i].cy - Height of detected object (int)
+        result[i].label - Name of detetected object (std::string)
+        result[i].score - Accuracy of detected object (float)
 
         (here int i is used as example for object detection sequence number)
     */
 
-    for (int i = 0; i < net.result.size(); i++)
+    for (int i = 0; i < result.size(); i++)
     {
-        std::cout << "************" << std::endl;
-        std::cout << "Detected: " + net.result[i].label << std::endl;
-        std::cout << "Score: " + std::to_string(net.result[i].score) + " %" << std::endl;
-        std::cout << "X, Y: " + std::to_string(net.result[i].x) + ", " + std::to_string(net.result[i].y) << std::endl;
-        std::cout << "CX (width), CY (height): " + std::to_string(net.result[i].cx) + ", " + std::to_string(net.result[i].cy) << std::endl;
+        cout << "************" << endl;
+        cout << "Detected: " + result[i].label << endl;
+        cout << "Score: " + to_string(result[i].score) + " %" << endl;
+        cout << "X, Y: " + to_string(result[i].x) + ", " + to_string(result[i].y) << endl;
+        cout << "W, H: " + to_string(result[i].w) + ", " + to_string(result[i].h) << endl;
     }
 
     // Write & show image to file for showcase

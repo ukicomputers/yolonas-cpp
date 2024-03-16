@@ -17,7 +17,7 @@ private:
 
     vector<float> scores;
     vector<cv::Rect> boxes;
-    vector<int> labels, selectedIDX;
+    vector<int> labels, suppressedObjs;
     vector<string> detectLabels;
 
     struct metadataConfig
@@ -29,18 +29,17 @@ private:
         int brm, cp;
     };
 
-    vector<metadataConfig> readConfig(string filePath);
-    vector<metadataConfig> cfg;
+    metadataConfig cfg;
+    void readConfig(string filePath);
+    void clearResults();
 
 public:
     struct detInf
     {
-        int x, y, cx, cy, score;
+        int x, y, w, h, score;
         string label;
     };
 
     YoloNAS(string netPath, string config, bool cuda, vector<string> lbls);
-    void predict(cv::Mat &img, bool applyOverlayOnImage = true);
-    void clearResults();
-    vector<detInf> result;    
+    vector<detInf> predict(cv::Mat &img, bool applyOverlayOnImage = true);   
 };

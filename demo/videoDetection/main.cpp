@@ -4,9 +4,10 @@
 #include <chrono>
 #include <cmath>
 #include <iostream>
+using namespace std;
 
 // This is vector for already trained (by deci.ai) YOLO-NAS COCO dataset
-const std::vector<std::string> COCO_LABELS{"person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat",
+const vector<string> COCO_LABELS{"person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat",
                                            "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
                                            "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack",
                                            "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball",
@@ -23,8 +24,8 @@ const string modelsPath = "../../../models/yolonas/onnx/";
 int main()
 {
     // Initialize FPS counter
-    std::chrono::steady_clock::time_point begin;
-    std::chrono::steady_clock::time_point end;
+    chrono::steady_clock::time_point begin;
+    chrono::steady_clock::time_point end;
 
     /*  YoloNAS class argument requirements:
             modelpath (std::string),
@@ -45,7 +46,7 @@ int main()
     // If we cannot open capture, we are returning an error
     if (!cap.isOpened())
     {
-        std::cerr << "capture not open" << std::endl;
+        cerr << "capture not open" << endl;
         return (-1);
     }
 
@@ -59,24 +60,21 @@ int main()
         if (frame.empty())
             break;
 
-        // We need to clear results before again detecting
-        net.clearResults();
-
         /* Argument requirements for net.predict void:
             cv::Mat (image),
             bool overlayOnImage = true (for visually representative detection)
         */
 
         // Run the FPS counter
-        begin = std::chrono::steady_clock::now();
+        begin = chrono::steady_clock::now();
 
         // Simply run net.predict(frame) to detect with overlay
         net.predict(frame);
 
         // Stop the FPS counter and show the count
-        end = std::chrono::steady_clock::now();
-        float fps = 1000.0 / static_cast<float>(std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count());
-        fps = std::roundf(fps * 100) / 100;
+        end = chrono::steady_clock::now();
+        float fps = 1000.0 / static_cast<float>(chrono::duration_cast<chrono::microseconds>(end - begin).count());
+        fps = roundf(fps * 100) / 100;
         cv::putText(frame, "FPS: " + to_string(fps), cv::Point(20, 20), cv::FONT_HERSHEY_DUPLEX, 0.5, cv::Scalar(0, 0, 0));
 
         // Show the result
