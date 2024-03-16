@@ -31,7 +31,7 @@ private:
 
     metadataConfig cfg;
     void readConfig(string filePath);
-    void clearResults();
+    void clearCache();
 
 public:
     struct detInf

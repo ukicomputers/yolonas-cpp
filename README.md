@@ -22,16 +22,16 @@ To install this library on your computer, firstly clone this repository:
 ```bash
 git clone https://github.com/ukicomputers/yolonas-cpp.git
 ```
-Then change directory to it, and execute **install.bash** (_will require later sudo permission_), installing as CMake libary:
+Then change directory to it, and execute **install.bash** with superuser permission, installing as CMake libary:
 ```bash
 cd yolonas-cpp
-bash install.bash
+sudo bash install.bash
 ```
 After that library will be installed.<br><br>**Aditionally**, if you want to download YOLO-NAS S COCO model to use directly from example, you can just execute this bash script:
 ```bash
 bash download_models.bash
 ```
-Download size is about ~47MB.
+Download size is about ~47MB (_maybe more, as the models are constantly updated_).
 
 ## Quick usage
 **CPP** code (_not full code, just minimal example_):
@@ -94,7 +94,7 @@ struct detInf
 Demo is located in folder `demo` from downloaded repository. To use it out-of-box, you can download example models by executing `download_models.bash`. To compile and run it, execute `build.bash` from `demo` folder.
 
 ## Custom model & metadata
-To use your own model, and run it also inside library, use `metadata.py` script, [link here](https://github.com/ukicomputers/yolonas-cpp/blob/main/metadata.py). To use it, in `metadata.py`, first few variables needs to be changed according to your model (model path, model type, number of classes). **IMPORTANT: `metadata.py` DOES NOT ACCEPT `.onnx` FILE FORMAT!** It only accepts the standard YOLO `.pt` format. <br>Script will convert your model to ONNX, and return required `metadata` file, that can be later used in inference.
+To use your own model, and run it also inside library, use `metadata.py` script, [link here](https://github.com/ukicomputers/yolonas-cpp/blob/main/metadata.py). To use it, in `metadata.py`, first few variables needs to be changed according to your model (model path, model type, number of classes). **IMPORTANT: `metadata.py` DOES NOT ACCEPT `.onnx` FILE FORMAT!** It only accepts the standard YOLO `.pt` format.<br><br>Script will convert your model to ONNX, and return required `metadata` file, that can be later used in inference.
 
 ## TODO
 - normalize image

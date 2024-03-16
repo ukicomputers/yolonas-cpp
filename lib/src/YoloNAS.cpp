@@ -171,38 +171,39 @@ vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
     imgInput.release();
 
     runPostProccessing(outDet);
-    outDet.release();
+    outDet.clear();
 
     vector<YoloNAS::detInf> result;
 
     for (auto &a : suppressedObjs)
-    {
-        int x = boxes[a].x - padLeft;
-        int y = boxes[a].y - padTop;
-        int cx = boxes[a].width;
-        int cy = boxes[a].height;
-        int score = scores[a] * 100;
-        string label = detectLabels[labels[a]];
+    {   YoloNAS::detInf currentDet;
+    
+        currentDet.x = boxes[a].x;
+        currentDet.y = boxes[a].y;
+        currentDet.w = boxes[a].width;
+        currentDet.h = boxes[a].height;
+        currentDet.score = scores[a] * 100;
+        currentDet.label = detectLabels[labels[a]];
 
         if (applyOverlayOnImage)
         {
             // Adjust the coordinates of the bounding box to the original image size
-            cv::Rect box(x, y, cx, cy);
+            cv::Rect box(currentDet.x, currentDet.y, currentDet.w, currentDet.h);
             cv::rectangle(img, box, cv::Scalar(139, 255, 14), 2);
 
             // Put text on detected objects to visually see what is detected
-            string text = label + " - " + to_string(score) + "%";
+            string text = currentDet.label + " - " + to_string(currentDet.score) + "%";
             cv::putText(img, text, cv::Point(box.x, box.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(56, 56, 255), 2);
         }
 
-        result.push_back({x, y, w, h, score, label});
+        result.push_back(currentDet);
     }
 
-    clearResults();
+    clearCache();
     return result;
 }
 
-void YoloNAS::clearResults()
+void YoloNAS::clearCache()
 {
     // Clear the result containers
     labels.clear();
