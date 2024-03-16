@@ -1,3 +1,4 @@
 #!/bin/bash
-git submodule update --recursive --init
+git submodule init
+git submodule update --recursive --force --merge
 echo -e "\nModels sucessfully downloaded! \n"
