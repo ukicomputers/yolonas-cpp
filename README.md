@@ -97,7 +97,7 @@ Demo is located in folder `demo` from downloaded repository. To use it out-of-bo
 To use your own model, and run it also inside library, use `metadata.py` script, [link here](https://github.com/ukicomputers/yolonas-cpp/blob/main/metadata.py). To use it, in `metadata.py`, first few variables needs to be changed according to your model (model path, model type, number of classes). **IMPORTANT: `metadata.py` DOES NOT ACCEPT `.onnx` FILE FORMAT!** It only accepts the standard YOLO `.pt` format.<br><br>Script will convert your model to ONNX, and return required `metadata` file, that can be later used in inference.
 
 ## TODO
-- normalize image
+- return image with original size, not resizing image to model requirement size
 - make detection visualisation look cooler
 
 ## License & contributions
@@ -110,3 +110,5 @@ Also, feel free to open new issues, and contribute it by opening pull request.
 ## References
 - [https://github.com/Deci-AI/super-gradients](https://github.com/Deci-AI/super-gradients)
 - [https://github.com/Hyuto/yolo-nas-onnx](https://github.com/Hyuto/yolo-nas-onnx/tree/master/yolo-nas-cpp)
+
+**ukicomputers.**

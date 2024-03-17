@@ -27,6 +27,7 @@ private:
         float std;
         bool dlmr;
         int brm, cp;
+        vector<int> norm;
     };
 
     metadataConfig cfg;
@@ -41,5 +42,5 @@ public:
     };
 
     YoloNAS(string netPath, string config, bool cuda, vector<string> lbls);
-    vector<detInf> predict(cv::Mat &img, bool applyOverlayOnImage = true);   
+    vector<detInf> predict(cv::Mat &img, bool applyOverlayOnImage = true);
 };

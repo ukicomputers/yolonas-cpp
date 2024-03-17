@@ -96,6 +96,18 @@ void YoloNAS::readConfig(string filePath)
             cfg.brm = (line != "n") ? stof(line) : 0;
         else if (cl == 8)
             cfg.cp = (line != "n") ? stof(line) : 0;
+        else if (cl == 9)
+        {
+            if (line != "n")
+            {
+                for (int i = 9; i <= 9 + 6; i++)
+                {
+                    getline(file, line);
+                    cfg.norm.push_back(stof(line));
+                }
+            }
+        }
+
         cl++;
     }
 
@@ -161,6 +173,10 @@ vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
     if (cfg.std > 0)
         imgInput.convertTo(imgInput, CV_32F, 1 / cfg.std);
 
+    // Normalize the image if needed
+    if(cfg.norm.size() > 0)
+        imgInput = (imgInput - cv::Scalar(cfg.norm[3], cfg.norm[4], cfg.norm[5])) / cv::Scalar(cfg.norm[0], cfg.norm[1], cfg.norm[2]);
+
     // Create a blob from the image
     cv::dnn::blobFromImage(imgInput, imgInput, 1.0, cv::Size(), cv::Scalar(), true, false);
 
@@ -175,9 +191,11 @@ vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
 
     vector<YoloNAS::detInf> result;
 
+    // Return detections from result of NMS
     for (auto &a : suppressedObjs)
-    {   YoloNAS::detInf currentDet;
-    
+    {
+        YoloNAS::detInf currentDet;
+
         currentDet.x = boxes[a].x;
         currentDet.y = boxes[a].y;
         currentDet.w = boxes[a].width;
@@ -205,7 +223,7 @@ vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
 
 void YoloNAS::clearCache()
 {
-    // Clear the result containers
+    // Clear the result-ish containers
     labels.clear();
     scores.clear();
     boxes.clear();
