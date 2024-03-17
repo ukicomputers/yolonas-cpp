@@ -2,7 +2,7 @@
 
 #include "ukicomputers/YoloNAS.hpp"
 
-YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls)
+YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls, float scoreThresh)
 {
     // Load the neural network model from an ONNX file
     net = cv::dnn::readNetFromONNX(netPath);
@@ -23,6 +23,9 @@ YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls
     readConfig(metadata);
     detectLabels = lbls;
     outShape = cv::Size(cfg.width, cfg.height);
+
+    if(scoreThresh != -1.00)
+        cfg.score = scoreThresh;
 }
 
 void YoloNAS::runPostProccessing(vector<vector<cv::Mat>> &out)

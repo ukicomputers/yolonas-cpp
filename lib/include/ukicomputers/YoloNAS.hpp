@@ -41,6 +41,6 @@ public:
         string label;
     };
 
-    YoloNAS(string netPath, string config, bool cuda, vector<string> lbls);
+    YoloNAS(string netPath, string config, bool cuda, vector<string> lbls, float scoreThresh = -1.00);
     vector<detInf> predict(cv::Mat &img, bool applyOverlayOnImage = true);
 };

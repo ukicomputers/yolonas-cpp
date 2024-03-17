@@ -59,20 +59,21 @@ target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 ### `YoloNAS` class
 Acceptable arguments:
 ```cpp
-YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls)
+YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls, float scoreThresh = -1.00)
 ```
 **Initializes YoloNAS class.**
 - modelpath (`std::string`),
 - Metadata file (`std::string`),
 - CUDA support (`bool`),
 - labels in a vector (`std::vector<std::string>`)
+- score thereshold (`float`, if thereshold is not given, library will use thereshold from metadata, otherwise, it will use from given argument)
 ```cpp
 YoloNAS net(modelPath, metadata, CUDA, labels);
 ```
 ### Function `predict`
 Acceptable arguments:
 ```cpp
-vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
+vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage = true)
 ```
 **Predicts (detects) objects from image.**
 - image (`cv::Mat`)
