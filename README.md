@@ -66,7 +66,7 @@ YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls
 - Metadata file (`std::string`),
 - CUDA support (`bool`),
 - labels in a vector (`std::vector<std::string>`)
-- score thereshold (`float`, if thereshold is not given, library will use thereshold from metadata, otherwise, it will use from given argument)
+- score thereshold (`float`, if thereshold is not given, library will use thereshold from metadata, otherwise, it will use from given argument, **values are entered from 0.1-1.0 not 1-100(%)**!)
 ```cpp
 YoloNAS net(modelPath, metadata, CUDA, labels);
 ```
@@ -86,10 +86,12 @@ Accesible elements from `detInf` struct:
 ```cpp
 struct detInf
 {
-    int x, y, w, h, score;
+    int x, y, w, h;
+    float score;
     std::string label;
 };
 ```
+**Score is returned as float value from 0.1-1.0**!
 
 ## Demo
 Demo is located in folder `demo` from downloaded repository. To use it out-of-box, you can download example models by executing `download_models.bash`. To compile and run it, execute `build.bash` from `demo` folder.

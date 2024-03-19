@@ -37,7 +37,8 @@ private:
 public:
     struct detInf
     {
-        int x, y, w, h, score;
+        int x, y, w, h;
+        float score;
         string label;
     };
 

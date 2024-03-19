@@ -24,7 +24,7 @@ YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls
     detectLabels = lbls;
     outShape = cv::Size(cfg.width, cfg.height);
 
-    if(scoreThresh != -1.00)
+    if (scoreThresh != -1.00)
         cfg.score = scoreThresh;
 }
 
@@ -34,27 +34,28 @@ void YoloNAS::runPostProccessing(vector<vector<cv::Mat>> &out)
     cv::Mat &rawScores = out[0][0], &bboxes = out[1][0];
     rawScores = rawScores.reshape(0, {rawScores.size[1], rawScores.size[2]});
     bboxes = bboxes.reshape(0, {bboxes.size[1], bboxes.size[2]});
+    bboxes.convertTo(bboxes, CV_32S);
 
     cv::Mat rowScores;
     for (int i = 0; i < bboxes.size[0]; i++)
     {
-        rowScores = rawScores.row(i);
+        double score;
         cv::Point classID;
-        double maxScore;
-        cv::minMaxLoc(rowScores, 0, &maxScore, 0, &classID);
+
+        rowScores = rawScores.row(i);
+        cv::minMaxLoc(rowScores, 0, &score, 0, &classID);
 
         // Check if the maximum score is above the threshold
-        if ((float)maxScore < cfg.score)
+        if ((float)score < cfg.score)
             continue;
 
         // Extract the bounding box coordinates
-        vector<float> box{bboxes.at<float>(i, 0), bboxes.at<float>(i, 1),
-                          bboxes.at<float>(i, 2), bboxes.at<float>(i, 3)};
+        vector<int> unsizedBox{bboxes.at<int>(i, 0), bboxes.at<int>(i, 1), bboxes.at<int>(i, 2), bboxes.at<int>(i, 3)};
 
         // Store the results
         labels.push_back(classID.x);
-        scores.push_back((float)maxScore);
-        boxes.push_back(cv::Rect((int)box[0], (int)box[1], (int)(box[2] - box[0]), (int)(box[3] - box[1])));
+        scores.push_back(score);
+        boxes.push_back(cv::Rect(unsizedBox[0], unsizedBox[1], (unsizedBox[2] - unsizedBox[0]), (unsizedBox[3] - unsizedBox[1])));
     }
 
     // Apply non-maximum suppression to remove redundant detections
@@ -103,7 +104,7 @@ void YoloNAS::readConfig(string filePath)
         {
             if (line != "n")
             {
-                for (int i = 9; i <= 9 + 6; i++)
+                for (int i = 9; i < 9 + 6; i++)
                 {
                     getline(file, line);
                     cfg.norm.push_back(stof(line));
@@ -130,9 +131,9 @@ vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
     {
         float scaleFactorX = (float)outShape.width / (float)imgInput.cols;
         float scaleFactorY = (float)outShape.height / (float)imgInput.rows;
-        float scaleFactor = std::min(scaleFactorX, scaleFactorY);
-        int newWidth = (int)std::round(imgInput.cols * scaleFactor);
-        int newHeight = (int)std::round(imgInput.rows * scaleFactor);
+        float scaleFactor = min(scaleFactorX, scaleFactorY);
+        int newWidth = (int)round(imgInput.cols * scaleFactor);
+        int newHeight = (int)round(imgInput.rows * scaleFactor);
         cv::resize(imgInput, imgInput, cv::Size(newWidth, newHeight), 0, 0, cv::INTER_LINEAR);
     }
 
@@ -177,7 +178,7 @@ vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
         imgInput.convertTo(imgInput, CV_32F, 1 / cfg.std);
 
     // Normalize the image if needed
-    if(cfg.norm.size() > 0)
+    if (cfg.norm.size() > 0)
         imgInput = (imgInput - cv::Scalar(cfg.norm[3], cfg.norm[4], cfg.norm[5])) / cv::Scalar(cfg.norm[0], cfg.norm[1], cfg.norm[2]);
 
     // Create a blob from the image
@@ -203,7 +204,7 @@ vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
         currentDet.y = boxes[a].y;
         currentDet.w = boxes[a].width;
         currentDet.h = boxes[a].height;
-        currentDet.score = scores[a] * 100;
+        currentDet.score = scores[a];
         currentDet.label = detectLabels[labels[a]];
 
         if (applyOverlayOnImage)
@@ -213,7 +214,7 @@ vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage)
             cv::rectangle(img, box, cv::Scalar(139, 255, 14), 2);
 
             // Put text on detected objects to visually see what is detected
-            string text = currentDet.label + " - " + to_string(currentDet.score) + "%";
+            string text = currentDet.label + " - " + to_string(int(currentDet.score * 100)) + "%";
             cv::putText(img, text, cv::Point(box.x, box.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(56, 56, 255), 2);
         }
 

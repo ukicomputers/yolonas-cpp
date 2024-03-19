@@ -13,3 +13,5 @@ cd build
 cmake ..
 make -j$(nproc)
 make install
+
+echo -e "\nLibrary is sucessfully installed.\n"
