@@ -38,7 +38,7 @@ int main()
     */
 
     // Prepare YoloNAS
-    YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", false, COCO_LABELS);
+    YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", false, COCO_LABELS, 0.5);
 
     // Make an capture (currently from camera source, you can also use and video, just specify it's path in string)
     cv::VideoCapture cap(0);

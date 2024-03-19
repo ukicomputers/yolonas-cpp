@@ -10,16 +10,6 @@ using namespace std;
 class YoloNAS
 {
 private:
-    cv::dnn::Net net;
-    cv::Size outShape;
-
-    void runPostProccessing(vector<vector<cv::Mat>> &out);
-
-    vector<float> scores;
-    vector<cv::Rect> boxes;
-    vector<int> labels, suppressedObjs;
-    vector<string> detectLabels;
-
     struct metadataConfig
     {
         float iou, score;
@@ -30,9 +20,20 @@ private:
         vector<int> norm;
     };
 
+    cv::dnn::Net net;
+    cv::Size outShape;
+
     metadataConfig cfg;
+    vector<string> labels;
+
+    cv::Mat runPreProcessing(cv::Mat img);
+    void runPostProccessing(vector<vector<cv::Mat>> out);
     void readConfig(string filePath);
-    void clearCache();
+
+    // Temporary vectors & variables
+    vector<float> scores;
+    vector<cv::Rect> boxes;
+    vector<int> labelsID, suppressedObjs;
 
 public:
     struct detInf
@@ -43,5 +44,5 @@ public:
     };
 
     YoloNAS(string netPath, string config, bool cuda, vector<string> lbls, float scoreThresh = -1.00);
-    vector<detInf> predict(cv::Mat &img, bool applyOverlayOnImage = true);
+    vector<detInf> predict(cv::Mat img, bool applyOverlayOnImage = true);
 };

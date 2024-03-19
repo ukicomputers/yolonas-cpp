@@ -32,7 +32,7 @@ int main()
     */
 
     // Prepare YoloNAS
-    YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", false, COCO_LABELS);
+    YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", false, COCO_LABELS, 0.5);
 
     // Prepare Image
     cv::Mat img = cv::imread(modelsPath + "image.jpg");
@@ -60,7 +60,7 @@ int main()
     {
         cout << "************" << endl;
         cout << "Detected: " + result[i].label << endl;
-        cout << "Score: " + to_string(result[i].score) + " %" << endl;
+        cout << "Score: " + to_string(result[i].score) << endl;
         cout << "X, Y: " + to_string(result[i].x) + ", " + to_string(result[i].y) << endl;
         cout << "W, H: " + to_string(result[i].w) + ", " + to_string(result[i].h) << endl;
     }

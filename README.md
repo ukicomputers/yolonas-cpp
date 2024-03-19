@@ -66,14 +66,14 @@ YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls
 - Metadata file (`std::string`),
 - CUDA support (`bool`),
 - labels in a vector (`std::vector<std::string>`)
-- score thereshold (`float`, if thereshold is not given, library will use thereshold from metadata, otherwise, it will use from given argument, **values are entered from 0.1-1.0 not 1-100(%)**!)
+- score thereshold (`float`, if thereshold is not given, library will use thereshold from metadata, otherwise, it will use from given argument, **values are entered from 0.1-1.0 not 1-100**)
 ```cpp
 YoloNAS net(modelPath, metadata, CUDA, labels);
 ```
 ### Function `predict`
 Acceptable arguments:
 ```cpp
-vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage = true)
+vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat img, bool applyOverlayOnImage = true)
 ```
 **Predicts (detects) objects from image.**
 - image (`cv::Mat`)
@@ -91,7 +91,7 @@ struct detInf
     std::string label;
 };
 ```
-**Score is returned as float value from 0.1-1.0**!
+**Score is returned as float value from 0.1-1.0**
 
 ## Demo
 Demo is located in folder `demo` from downloaded repository. To use it out-of-box, you can download example models by executing `download_models.bash`. To compile and run it, execute `build.bash` from `demo` folder.
@@ -100,7 +100,10 @@ Demo is located in folder `demo` from downloaded repository. To use it out-of-bo
 To use your own model, and run it also inside library, use `metadata.py` script, [link here](https://github.com/ukicomputers/yolonas-cpp/blob/main/metadata.py). To use it, in `metadata.py`, first few variables needs to be changed according to your model (model path, model type, number of classes). **IMPORTANT: `metadata.py` DOES NOT ACCEPT `.onnx` FILE FORMAT!** It only accepts the standard YOLO `.pt` format.<br><br>Script will convert your model to ONNX, and return required `metadata` file, that can be later used in inference.
 
 ## TODO
-- return image with original size, not resizing image to model requirement size
+- better error handling
+- do nicer `runPostProcessing` function
+- (maybe) build in fps counter
+- add score thresh control in `predict` function, not head class
 - make detection visualisation look cooler
 
 ## License & contributions

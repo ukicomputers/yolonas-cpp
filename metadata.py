@@ -92,7 +92,7 @@ def main():
         score thereshold (float)
         width (int)
         height (int)
-        standardize (string t:n, 1:0)
+        standardize (int:string (if n))
         detect long max rescale (string t:n, 1:0)
         bottom right padding (int:string (if n))
         center padding (int:string (if n))
