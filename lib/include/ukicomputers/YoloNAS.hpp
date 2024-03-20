@@ -1,4 +1,5 @@
-// Written by Uglješa Lukešević (github.com/ukicomputers)
+// YOLO-NAS CPP library written by Uglješa Lukešević (github.com/ukicomputers)
+// Marked as Open Source project under GNU GPL-3.0 license
 
 #pragma once
 #include <fstream>
@@ -9,6 +10,17 @@ using namespace std;
 
 class YoloNAS
 {
+public:
+    struct detectionInfo
+    {
+        int x, y, w, h;
+        float score;
+        string label;
+    };
+
+    YoloNAS(string netPath, string config, vector<string> lbls, bool cuda = false);
+    vector<detectionInfo> predict(cv::Mat &img, bool applyOverlayOnImage = true, float scoreThresh = -1.00);
+
 private:
     struct metadataConfig
     {
@@ -26,23 +38,16 @@ private:
     metadataConfig cfg;
     vector<string> labels;
 
-    cv::Mat runPreProcessing(cv::Mat img);
-    void runPostProccessing(vector<vector<cv::Mat>> out);
     void readConfig(string filePath);
+    cv::Mat runPreProcessing(cv::Mat &img);
+    void exceptionHandler(int ex);
+    void painter(cv::Mat &img, detectionInfo &detection);
 
-    // Temporary vectors & variables
-    vector<float> scores;
-    vector<cv::Rect> boxes;
-    vector<int> labelsID, suppressedObjs;
-
-public:
-    struct detInf
-    {
-        int x, y, w, h;
-        float score;
-        string label;
-    };
-
-    YoloNAS(string netPath, string config, bool cuda, vector<string> lbls, float scoreThresh = -1.00);
-    vector<detInf> predict(cv::Mat img, bool applyOverlayOnImage = true);
+    // Inputs are defined as destinstions, like cv:: call, except our own implementation
+    void runPostProccessing(vector<vector<cv::Mat>> &input,
+                            vector<cv::Rect> &boxesOut,
+                            vector<int> &labelsOut,
+                            vector<float> &scoresOut,
+                            vector<int> &suppressedObjs,
+                            float &scoreThresh);
 };

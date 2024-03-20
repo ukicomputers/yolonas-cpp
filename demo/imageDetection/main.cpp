@@ -19,31 +19,35 @@ const vector<string> COCO_LABELS{"person", "bicycle", "car", "motorcycle", "airp
 // Head directory of all models
 const string modelsPath = "../../../models/yolonas/onnx/";
 
+// Used re-defined score thereshold
+float score = 0.5;
+
 int main()
 {
     /*  YoloNAS class argument requirements:
             modelpath (std::string),
             metadata path (std::string),
-            CUDA support (bool),
             labels in a vector (std::vector<std::string>)
+            CUDA support (bool),
 
         All of this information you can find in Python script that gets info
         from selected YOLO-NAS model. Script is in repo.
     */
 
     // Prepare YoloNAS
-    YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", false, COCO_LABELS, 0.5);
+    YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", COCO_LABELS, false);
 
     // Prepare Image
     cv::Mat img = cv::imread(modelsPath + "image.jpg");
 
     /* Argument requirements for net.predict void:
         cv::Mat (image),
-        bool overlayOnImage = true (for visually representative detection)
+        bool overlayOnImage = true (for visually representative detection),
+        int scoreThreshold = -1.0 (if passed, detector will use passed thereshold, otherwise, model default)
     */
 
     // Simply run net.predict(img) to detect with overlay
-    auto result = net.predict(img);
+    auto result = net.predict(img, true, score);
 
     /* Defined vector for detection result:
         result[i].x - X coordinate of detected object (int)

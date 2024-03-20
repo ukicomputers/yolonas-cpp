@@ -38,10 +38,10 @@ Download size is about ~47MB (_maybe more, as the models are constantly updated_
 ```cpp
 // include
 #include <ukicomputers/YoloNAS.hpp>
-//              modelpath           metadata   CUDA   Labels
-YoloNAS net("./yolo_nas_s.onnx", "./metadata", false, {"lbl1", "lbl2"});
-//          img  overlay (visually displayed detection)
-net.predict(img, true);
+//              modelpath           metadata   Labels            CUDA
+YoloNAS net("./yolo_nas_s.onnx", "./metadata", {"lbl1", "lbl2"}, false);
+//          img  draw  score threshold
+net.predict(img, true, 0.5);
 ```
 Include library in **CMake**:
 ```cmake
@@ -59,39 +59,40 @@ target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 ### `YoloNAS` class
 Acceptable arguments:
 ```cpp
-YoloNAS::YoloNAS(string netPath, string metadata, bool cuda, vector<string> lbls, float scoreThresh = -1.00)
+YoloNAS::YoloNAS(string netPath, string config, vector<string> lbls, bool cuda = false);
 ```
 **Initializes YoloNAS class.**
 - modelpath (`std::string`),
 - Metadata file (`std::string`),
-- CUDA support (`bool`),
 - labels in a vector (`std::vector<std::string>`)
-- score thereshold (`float`, if thereshold is not given, library will use thereshold from metadata, otherwise, it will use from given argument, **values are entered from 0.1-1.0 not 1-100**)
+- CUDA support (`bool`, default `false`),
+
 ```cpp
 YoloNAS net(modelPath, metadata, CUDA, labels);
 ```
 ### Function `predict`
 Acceptable arguments:
 ```cpp
-vector<YoloNAS::detInf> YoloNAS::predict(cv::Mat img, bool applyOverlayOnImage = true)
+vector<YoloNAS::detectionInfo> YoloNAS::predict(cv::Mat &img, bool applyOverlayOnImage = true, float scoreThresh = -1.00)
 ```
 **Predicts (detects) objects from image.**
 - image (`cv::Mat`)
 - visualy display detection (`bool`, writing on given image, default `true`)
+- score thereshold (`float`, if thereshold is not given, library will use thereshold from metadata, otherwise, it will use from given argument, **values are entered from 0.1-1.0 not 1-100**, may very for if different model is used)
 ```cpp
-net.predict(image, overlayOnImage);
+net.predict(image, overlayOnImage, scoreThreshold);
 ```
-**Returns `detInf` struct(s) in vector for each detection.** <br>
-Accesible elements from `detInf` struct:
+**Returns `detectionInfo` struct(s) in vector for each detection.** <br>
+Accesible elements from `detectionInfo` struct:
 ```cpp
-struct detInf
+struct detectionInfo
 {
     int x, y, w, h;
     float score;
-    std::string label;
+    string label;
 };
 ```
-**Score is returned as float value from 0.1-1.0**
+**Score is returned as float value from 0.1-1.0**. May vary if different model is used.
 
 ## Demo
 Demo is located in folder `demo` from downloaded repository. To use it out-of-box, you can download example models by executing `download_models.bash`. To compile and run it, execute `build.bash` from `demo` folder.
@@ -100,10 +101,7 @@ Demo is located in folder `demo` from downloaded repository. To use it out-of-bo
 To use your own model, and run it also inside library, use `metadata.py` script, [link here](https://github.com/ukicomputers/yolonas-cpp/blob/main/metadata.py). To use it, in `metadata.py`, first few variables needs to be changed according to your model (model path, model type, number of classes). **IMPORTANT: `metadata.py` DOES NOT ACCEPT `.onnx` FILE FORMAT!** It only accepts the standard YOLO `.pt` format.<br><br>Script will convert your model to ONNX, and return required `metadata` file, that can be later used in inference.
 
 ## TODO
-- better error handling
-- do nicer `runPostProcessing` function
 - (maybe) build in fps counter
-- add score thresh control in `predict` function, not head class
 - make detection visualisation look cooler
 
 ## License & contributions

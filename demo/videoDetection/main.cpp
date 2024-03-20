@@ -8,18 +8,21 @@ using namespace std;
 
 // This is vector for already trained (by deci.ai) YOLO-NAS COCO dataset
 const vector<string> COCO_LABELS{"person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat",
-                                           "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
-                                           "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack",
-                                           "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball",
-                                           "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket",
-                                           "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
-                                           "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair",
-                                           "couch", "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse",
-                                           "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator",
-                                           "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"};
+                                 "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
+                                 "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack",
+                                 "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball",
+                                 "kite", "baseball bat", "baseball glove", "skateboard", "surfboard", "tennis racket",
+                                 "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
+                                 "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair",
+                                 "couch", "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse",
+                                 "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator",
+                                 "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"};
 
 // Head directory of all models
 const string modelsPath = "../../../models/yolonas/onnx/";
+
+// Used re-defined score thereshold
+float score = 0.5;
 
 int main()
 {
@@ -30,15 +33,15 @@ int main()
     /*  YoloNAS class argument requirements:
             modelpath (std::string),
             metadata path (std::string),
-            CUDA support (bool),
             labels in a vector (std::vector<std::string>)
+            CUDA support (bool),
 
         All of this information you can find in Python script that gets info
         from selected YOLO-NAS model. Script is in repo.
     */
 
     // Prepare YoloNAS
-    YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", false, COCO_LABELS, 0.5);
+    YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", COCO_LABELS, false);
 
     // Make an capture (currently from camera source, you can also use and video, just specify it's path in string)
     cv::VideoCapture cap(0);
@@ -62,14 +65,15 @@ int main()
 
         /* Argument requirements for net.predict void:
             cv::Mat (image),
-            bool overlayOnImage = true (for visually representative detection)
+            bool overlayOnImage = true (for visually representative detection),
+            int scoreThreshold = -1.0 (if passed, detector will use passed thereshold, otherwise, model default)
         */
 
         // Run the FPS counter
         begin = chrono::steady_clock::now();
 
         // Simply run net.predict(frame) to detect with overlay
-        net.predict(frame);
+        net.predict(frame, true, score);
 
         // Stop the FPS counter and show the count
         end = chrono::steady_clock::now();
