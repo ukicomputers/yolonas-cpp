@@ -6,7 +6,7 @@ As normal world of AI today becomed reality, we use it as much as we can. Everyo
 ![efficency](https://github.com/ukicomputers/yolonas-cpp/assets/84191191/3c991abb-e1ed-49da-9cc0-0c37fcab7fe8)
 
 ## Detection
-![detected](https://github.com/ukicomputers/yolonas-cpp/assets/84191191/800d2aa9-e564-4cd5-a8c8-a38328711fbc)
+![detected](https://github.com/ukicomputers/yolonas-cpp/assets/84191191/888a729e-bdc2-4c59-ae74-6cf855fc5cf3)
 <br><br>Library uses **OpenCV** and it's **DNN** to run the model. Model is under **ONNX** format. It's also able to run with **CUDA** (not tested yet).
 
 ## Requirements
