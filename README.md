@@ -1,5 +1,6 @@
 # yolonas-cpp
-An CPP library for object detection with full processing using OpenCV DNN (for ONNX) on YOLO-NAS model.
+An CPP library for object detection with full processing using OpenCV DNN (for ONNX) on YOLO-NAS model.<br>
+[Showcase, demo and quckstart YouTube video](https://youtu.be/t4x2_ebe988)
 
 ## Introduction
 As normal world of AI today becomed reality, we use it as much as we can. Everyone knows that today to run an AI model, or anything similar to that, you need intermediate processing power that many people cannot afford it. As we, humans, we always choose the easiest path to do something. That is similar here. If you search online for some machine vision thing, you will probably 99% of time get something written in **Python**. Currently, **Python** is the easiest path, but in inference time not the fastest. If you understand what Python **_Interpreter_** is, you will understand how is it slow to do some complex tasks. There comes **CPP**. It almost runs everything today under the hood, and it's incredibly **FAST**. But **ONLY KNOWLEDGABLE PEOPLE** knows how to use it. So, here comes this libary. You can in **TWO LINES** of code run machine detection. It runs using **OpenCV**, and it can use **YOLO-NAS**, that model which is really good, with fastest detection (inference) time, and it CAN detect extremly small objects. Here is it's efficiency comparing to other models:<br><br>
@@ -78,7 +79,7 @@ vector<YoloNAS::detectionInfo> YoloNAS::predict(cv::Mat &img, bool applyOverlayO
 **Predicts (detects) objects from image.**
 - image (`cv::Mat`)
 - visualy display detection (`bool`, writing on given image, default `true`)
-- score thereshold (`float`, if thereshold is not given, library will use thereshold from metadata, otherwise, it will use from given argument, **values are entered from 0.1-1.0 not 1-100**, may very for if different model is used)
+- score thereshold (`float`, if thereshold is not given, library will use thereshold from metadata, otherwise, it will use from given argument, **values are entered from 0.1-1.0 not 1-100**, may vary for if different model is used)
 ```cpp
 net.predict(image, overlayOnImage, scoreThreshold);
 ```
