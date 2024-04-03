@@ -24,9 +24,12 @@ const string modelsPath = "../../../models/yolonas/onnx/";
 // Used re-defined score thereshold
 float score = 0.5;
 
+// Write video
+bool writeVideo = true;
+
 int main()
 {
-    // Initialize FPS counter
+    // Initialize time counter
     chrono::steady_clock::time_point begin;
     chrono::steady_clock::time_point end;
 
@@ -43,8 +46,13 @@ int main()
     // Prepare YoloNAS
     YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", COCO_LABELS, false);
 
-    // Make an capture (currently from camera source, you can also use and video, just specify it's path in string)
-    cv::VideoCapture cap(0);
+    // Make an capture (currently from file, you can also use and camera source, just insert it's ID)
+    cv::VideoCapture cap(modelsPath + "street.mp4");
+    
+    // Make VideoWriter if bool is true
+    cv::VideoWriter video;
+    if(writeVideo)
+        video.open("detection.avi", cv::VideoWriter::fourcc('M','J','P','G'), 24, cv::Size(cap.get(cv::CAP_PROP_FRAME_WIDTH), cap.get(cv::CAP_PROP_FRAME_HEIGHT)));
 
     // If we cannot open capture, we are returning an error
     if (!cap.isOpened())
@@ -69,20 +77,23 @@ int main()
             int scoreThreshold = -1.0 (if passed, detector will use passed thereshold, otherwise, model default)
         */
 
-        // Run the FPS counter
+        // Run the time counter
         begin = chrono::steady_clock::now();
 
         // Simply run net.predict(frame) to detect with overlay
         net.predict(frame, true, score);
 
-        // Stop the FPS counter and show the count
+        // Stop the time counter and show the count
         end = chrono::steady_clock::now();
-        float fps = 1000.0 / float(chrono::duration_cast<chrono::microseconds>(end - begin).count());
-        fps = roundf(fps * 100) / 100;
-        cv::putText(frame, "FPS: " + to_string(fps), cv::Point(20, 20), cv::FONT_HERSHEY_DUPLEX, 0.5, cv::Scalar(0, 0, 0));
+        int inference = chrono::duration_cast<chrono::milliseconds>(end - begin).count();
+        cv::putText(frame, "Inference time: " + to_string(inference) + "ms", cv::Point(20, 40), cv::FONT_HERSHEY_DUPLEX, 0.75, cv::Scalar(255, 255, 0));
 
         // Show the result
         cv::imshow("detection", frame);
+
+        // Write video if possible
+        if(writeVideo)
+            video.write(frame);
 
         // If pressed ESC, close the program
         char c = (char)cv::waitKey(25);
@@ -90,7 +101,9 @@ int main()
             break;
     }
 
-    // Release the capture
+    // Release the capture and video
     cap.release();
+    video.release();
+
     return 0;
 }

@@ -25,7 +25,7 @@ float score = 0.5;
 
 int main()
 {
-    // Initialize FPS counter
+    // Initialize time counter
     chrono::steady_clock::time_point begin;
     chrono::steady_clock::time_point end;
 
