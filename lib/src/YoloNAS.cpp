@@ -31,6 +31,18 @@ YoloNAS::YoloNAS(string netPath, string config, vector<string> lbls, bool cuda)
     readConfig(config);
     labels = lbls;
     outShape = cv::Size(cfg.width, cfg.height);
+
+    // Load model into memory
+    warmupModel();
+}
+
+void YoloNAS::warmupModel()
+{
+    cv::Mat input({1, 3, cfg.width, cfg.height}, CV_32F);
+    cv::randu(input, cv::Scalar(0), cv::Scalar(1)); // fill matrix
+    net.setInput(input);
+    net.forward();
+    input.release();
 }
 
 cv::Mat YoloNAS::runPreProcessing(cv::Mat &img)

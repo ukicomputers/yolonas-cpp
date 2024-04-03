@@ -77,7 +77,7 @@ int main()
 
         // Stop the FPS counter and show the count
         end = chrono::steady_clock::now();
-        float fps = 1000.0 / static_cast<float>(chrono::duration_cast<chrono::microseconds>(end - begin).count());
+        float fps = 1000.0 / float(chrono::duration_cast<chrono::microseconds>(end - begin).count());
         fps = roundf(fps * 100) / 100;
         cv::putText(frame, "FPS: " + to_string(fps), cv::Point(20, 20), cv::FONT_HERSHEY_DUPLEX, 0.5, cv::Scalar(0, 0, 0));
 

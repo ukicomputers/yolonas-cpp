@@ -2,6 +2,7 @@
 
 #include <ukicomputers/YoloNAS.hpp>
 #include <iostream>
+#include <chrono>
 using namespace std;
 
 // This is vector for already trained (by deci.ai) YOLO-NAS COCO dataset
@@ -24,6 +25,10 @@ float score = 0.5;
 
 int main()
 {
+    // Initialize FPS counter
+    chrono::steady_clock::time_point begin;
+    chrono::steady_clock::time_point end;
+
     /*  YoloNAS class argument requirements:
             modelpath (std::string),
             metadata path (std::string),
@@ -46,8 +51,15 @@ int main()
         int scoreThreshold = -1.0 (if passed, detector will use passed thereshold, otherwise, model default)
     */
 
+    // Run the time counter
+    begin = chrono::steady_clock::now();
+
     // Simply run net.predict(img) to detect with overlay
     auto result = net.predict(img, true, score);
+
+    // Stop the time counter and show the count
+    end = chrono::steady_clock::now();
+    cout << "Inference time: " << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << "ms" << endl << endl;
 
     /* Defined vector for detection result:
         result[i].x - X coordinate of detected object (int)

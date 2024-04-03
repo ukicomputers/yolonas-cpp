@@ -42,6 +42,7 @@ private:
     cv::Mat runPreProcessing(cv::Mat &img);
     void exceptionHandler(int ex);
     void painter(cv::Mat &img, detectionInfo &detection);
+    void warmupModel();
 
     // Inputs are defined as destinstions, like cv:: call, except our own implementation
     void runPostProccessing(vector<vector<cv::Mat>> &input,
