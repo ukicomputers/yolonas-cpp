@@ -19,6 +19,21 @@ As normal world of AI today becomed reality, we use it as much as we can. Everyo
 I got issues when I used precompiled version of OpenCV, `libopencv-dev`, installed with `apt` package manager. Then, I was not able to start a inference at all. To fix this issue, I compiled and installed OpenCV using this [gist](https://gist.github.com/ukicomputers/e559854ac0b4fba7ea722722f96d5fbf). Please use it to avoid any issues.
 
 ## Setup
+### via Docker
+To setup this library and interact with it via Docker, you can simply pull it and run by using command:
+```bash
+docker run yolonas-cpp
+```
+By default, container will use default model and picture for detection.
+Currently, Docker container **DOES NOT** support GPU accelerated, and video inference.
+These features are comming soon.
+You can interact with it by setting enviroment variables when running it:
+```bash
+docker run -v /path/to/write/out/imgs:/output -e model="path/to/model" -e metadata="path/to/metadata" -e source="path/to/source" yolonas-cpp
+```
+It is important that if you want to get images of detections, you need to make a bridge from folder on your device, exactly to folder on container located on `/output`. You may also want to create bridges for models, etc located on your local device.
+You can also find image on [Docker Hub](https://hub.docker.com/r/ukicomputers/yolonas-cpp).
+### Local setup
 To install this library on your computer, firstly clone this repository:
 ```bash
 git clone https://github.com/ukicomputers/yolonas-cpp.git
@@ -102,7 +117,7 @@ Demo is located in folder `demo` from downloaded repository. To use it out-of-bo
 To use your own model, and run it also inside library, use `metadata.py` script, [link here](https://github.com/ukicomputers/yolonas-cpp/blob/main/metadata.py). To use it, in `metadata.py`, first few variables needs to be changed according to your model (model path, model type, number of classes). **IMPORTANT: `metadata.py` DOES NOT ACCEPT `.onnx` FILE FORMAT!** It only accepts the standard YOLO `.pt` format.<br><br>Script will convert your model to ONNX, and return required `metadata` file, that can be later used in inference.
 
 ## TODO
-- (maybe) build in fps counter
+- fix required Docker things
 - make detection visualisation look cooler
 
 ## License & contributions
