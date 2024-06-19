@@ -20,16 +20,17 @@ I got issues when I used precompiled version of OpenCV, `libopencv-dev`, install
 
 ## Setup
 ### via Docker
-To setup this library and interact with it via Docker, you can simply pull it and run by using command:
+To setup this library and interact with it via Docker, you can simply pull it and run by using commands:
 ```bash
-docker run yolonas-cpp
+docker pull ukicomputers/yolonas-cpp
+docker run ukicomputers/yolonas-cpp
 ```
 By default, container will use default model and picture for detection.
 Currently, Docker container **DOES NOT** support GPU accelerated, and video inference.
 These features are comming soon.
 You can interact with it by setting enviroment variables when running it:
 ```bash
-docker run -v /path/to/write/out/imgs:/output -e model="path/to/model" -e metadata="path/to/metadata" -e source="path/to/source" yolonas-cpp
+docker run -v /path/to/write/out/imgs:/output -e model="path/to/model" -e metadata="path/to/metadata" -e source="path/to/source" ukicomputers/yolonas-cpp
 ```
 It is important that if you want to get images of detections, you need to make a bridge from folder on your device, exactly to folder on container located on `/output`. You may also want to create bridges for models, etc located on your local device.
 You can also find image on [Docker Hub](https://hub.docker.com/r/ukicomputers/yolonas-cpp).

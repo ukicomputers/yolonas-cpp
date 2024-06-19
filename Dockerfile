@@ -13,17 +13,15 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/*
 
 # Compile and install OpenCV
-WORKDIR /opt
 RUN git clone https://github.com/opencv/opencv
-RUN mkdir /opt/opencv-build
-WORKDIR /opt/opencv-build 
-RUN cmake ../opencv && \
+WORKDIR opencv/build
+RUN cmake .. && \
     make -j$(nproc) && \
     make install && \
-    rm -rf /opt/opencv
+    rm -rf /opencv
 
 # Compile and install yolonas-cpp library
-COPY . /yolonas-cpp
+RUN git clone https://github.com/ukicomputers/yolonas-cpp /yolonas-cpp
 WORKDIR /yolonas-cpp
 RUN bash install.bash
 
@@ -40,4 +38,4 @@ ENV model="/yolonas-cpp/models/yolonas/onnx/yolonas_s.onnx"
 ENV metadata="/yolonas-cpp/models/yolonas/onnx/yolonas_s_metadata"
 ENV source="/yolonas-cpp/models/yolonas/onnx/image.jpg"
 
-ENTRYPOINT ["/yolonas-cpp/demo/docker/build/yolonas-demo"]
+CMD ["/yolonas-cpp/demo/docker/build/yolonas-demo"]
