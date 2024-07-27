@@ -45,6 +45,7 @@ int main()
 
     // Prepare YoloNAS
     YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", COCO_LABELS, false);
+    net.warmupModel();
 
     // Make an capture (currently from file, you can also use and camera source, just insert it's ID)
     cv::VideoCapture cap(modelsPath + "street.mp4");

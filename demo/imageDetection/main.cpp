@@ -41,6 +41,7 @@ int main()
 
     // Prepare YoloNAS
     YoloNAS net(modelsPath + "yolonas_s.onnx", modelsPath + "yolonas_s_metadata", COCO_LABELS, false);
+    net.warmupModel();
 
     // Prepare Image
     cv::Mat img = cv::imread(modelsPath + "image.jpg");

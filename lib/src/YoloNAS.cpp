@@ -31,9 +31,6 @@ YoloNAS::YoloNAS(string netPath, string config, vector<string> lbls, bool cuda)
     readConfig(config);
     labels = lbls;
     outShape = cv::Size(cfg.width, cfg.height);
-
-    // Load model into memory
-    warmupModel();
 }
 
 void YoloNAS::warmupModel()

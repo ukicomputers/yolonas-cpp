@@ -20,6 +20,7 @@ public:
 
     YoloNAS(string netPath, string config, vector<string> lbls, bool cuda = false);
     vector<detectionInfo> predict(cv::Mat &img, bool applyOverlayOnImage = true, float scoreThresh = -1.00);
+    void warmupModel();
 
 private:
     struct metadataConfig
@@ -42,7 +43,6 @@ private:
     cv::Mat runPreProcessing(cv::Mat &img);
     void exceptionHandler(int ex);
     void painter(cv::Mat &img, detectionInfo &detection);
-    void warmupModel();
 
     // Inputs are defined as destinstions, like cv:: call, except our own implementation
     void runPostProccessing(vector<vector<cv::Mat>> &input,
